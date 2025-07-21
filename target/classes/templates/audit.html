@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit Logs - DLT Trade Link System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Audit Logs</h1>
+            <p>Complete transaction history and event logging</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/orders">Orders</a></li>
+                <li><a href="/audit" class="active">Audit Logs</a></li>
+                <li><a href="/validation">Hash Validation</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="audit-section">
+                <div class="card">
+                    <h2>Filter Options</h2>
+                    <div class="filter-controls">
+                        <input type="text" id="orderIdFilter" placeholder="Filter by Order ID">
+                        <select id="stageFilter">
+                            <option value="">All Stages</option>
+                            <option value="SOLICITATION">Solicitation</option>
+                            <option value="SUITABILITY">Suitability</option>
+                            <option value="ORDER_MANAGER">Order Manager</option>
+                            <option value="REVIEWER">Reviewer</option>
+                            <option value="OPERATIONS">Operations</option>
+                            <option value="PRODUCT_PROCESSOR">Product Processor</option>
+                        </select>
+                        <select id="statusFilter">
+                            <option value="">All Status</option>
+                            <option value="SUCCESS">Success</option>
+                            <option value="FAILED">Failed</option>
+                        </select>
+                        <button onclick="applyFilters()">Apply Filters</button>
+                        <button onclick="clearFilters()">Clear</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Audit Trail</h2>
+                    <div id="auditLogsContainer">
+                        <p>Loading audit logs...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/audit.js"></script>
+</body>
+</html>

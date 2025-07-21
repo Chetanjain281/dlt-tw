@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hash Validation - DLT Trade Link System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Hash Chain Validation</h1>
+            <p>Verify blockchain integrity and detect tampering</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/orders">Orders</a></li>
+                <li><a href="/audit">Audit Logs</a></li>
+                <li><a href="/validation" class="active">Hash Validation</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="validation-section">
+                <div class="card">
+                    <h2>Validate Order Chain</h2>
+                    <div class="validation-controls">
+                        <select id="orderSelect">
+                            <option value="">Select an order to validate...</option>
+                        </select>
+                        <button onclick="validateOrder()">Validate Hash Chain</button>
+                    </div>
+                    <div id="validationResult"></div>
+                </div>
+
+                <div class="card">
+                    <h2>Hash Chain Visualization</h2>
+                    <div id="hashChainContainer">
+                        <p>Select an order to view its hash chain</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>System Integrity Check</h2>
+                    <button onclick="validateAllOrders()">Validate All Orders</button>
+                    <div id="systemValidationResult"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/validation.js"></script>
+</body>
+</html>

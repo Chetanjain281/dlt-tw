@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orders - DLT Trade Link System</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Order Management</h1>
+            <p>Track and monitor all trade orders</p>
+        </header>
+
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/orders" class="active">Orders</a></li>
+                <li><a href="/audit">Audit Logs</a></li>
+                <li><a href="/validation">Hash Validation</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <div class="orders-section">
+                <div class="card">
+                    <h2>All Orders</h2>
+                    <div id="ordersContainer">
+                        <p>Loading orders...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="orderDetailModal" class="modal">
+                <div class="modal-content large">
+                    <span class="close">&times;</span>
+                    <h2>Order Details</h2>
+                    <div id="orderDetailContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/common.js"></script>
+    <script src="/js/orders.js"></script>
+</body>
+</html>
