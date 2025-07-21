@@ -69,6 +69,9 @@ function displayOrders() {
                 <td>${formatTimestamp(order.createdAt)}</td>
                 <td>
                     <button onclick="showOrderDetails('${order.orderId}')" class="btn-small">Details</button>
+                    ${order.overallStatus === 'PENDING_APPROVAL' ? 
+                        `<button onclick="approveOrder('${order.orderId}')" class="btn-small btn-approve">Approve</button>
+                         <button onclick="rejectOrder('${order.orderId}')" class="btn-small btn-reject">Reject</button>` : ''}
                 </td>
             </tr>
         `;
@@ -80,6 +83,28 @@ function displayOrders() {
     `;
     
     container.innerHTML = html;
+}
+
+async function approveOrder(orderId) {
+    try {
+        await makeApiCall(`${API_BASE}/orders/${orderId}/approve`, 'POST');
+        showMessage('Order approved successfully!');
+        loadOrdersData(); // Refresh the orders list
+    } catch (error) {
+        console.error('Failed to approve order:', error);
+        showMessage('Failed to approve order', true);
+    }
+}
+
+async function rejectOrder(orderId) {
+    try {
+        await makeApiCall(`${API_BASE}/orders/${orderId}/reject`, 'POST');
+        showMessage('Order rejected successfully!');
+        loadOrdersData(); // Refresh the orders list
+    } catch (error) {
+        console.error('Failed to reject order:', error);
+        showMessage('Failed to reject order', true);
+    }
 }
 
 async function showOrderDetails(orderId) {

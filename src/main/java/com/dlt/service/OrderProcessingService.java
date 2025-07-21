@@ -75,8 +75,7 @@ public class OrderProcessingService {
             auditService.logEvent(order.getOrderId(), "SOLICITATION", "PROCESS_SOLICITATION", 
                 "SUCCESS", "Solicitation processed successfully");
             
-            // Auto proceed to suitability
-            processSuitability(order, client, fund);
+            order.setOverallStatus("PENDING_APPROVAL");
             
         } catch (Exception e) {
             OrderStage failedStage = new OrderStage("SOLICITATION", new HashMap<>(), "", "FAILED");
@@ -109,12 +108,10 @@ public class OrderProcessingService {
             String hash = hashUtil.calculateHash(previousHash, suitabilityData);
             OrderStage stage = new OrderStage("SUITABILITY", suitabilityData, hash, "SUCCESS");
             order.addStage(stage);
+            order.setOverallStatus("PENDING_APPROVAL");
             
             auditService.logEvent(order.getOrderId(), "SUITABILITY", "PROCESS_SUITABILITY", 
                 "SUCCESS", "Suitability check completed with score: " + suitabilityScore);
-            
-            // Auto proceed to order manager
-            processOrderManager(order);
             
         } catch (Exception e) {
             OrderStage failedStage = new OrderStage("SUITABILITY", new HashMap<>(), "", "FAILED");
@@ -138,12 +135,10 @@ public class OrderProcessingService {
             String hash = hashUtil.calculateHash(previousHash, orderManagerData);
             OrderStage stage = new OrderStage("ORDER_MANAGER", orderManagerData, hash, "SUCCESS");
             order.addStage(stage);
+            order.setOverallStatus("PENDING_APPROVAL");
             
             auditService.logEvent(order.getOrderId(), "ORDER_MANAGER", "PROCESS_ORDER_MANAGER", 
                 "SUCCESS", "Order forwarded to reviewer");
-            
-            // Auto proceed to reviewer
-            processReviewer(order);
             
         } catch (Exception e) {
             OrderStage failedStage = new OrderStage("ORDER_MANAGER", new HashMap<>(), "", "FAILED");
@@ -167,12 +162,10 @@ public class OrderProcessingService {
             String hash = hashUtil.calculateHash(previousHash, reviewerData);
             OrderStage stage = new OrderStage("REVIEWER", reviewerData, hash, "SUCCESS");
             order.addStage(stage);
+            order.setOverallStatus("PENDING_APPROVAL");
             
             auditService.logEvent(order.getOrderId(), "REVIEWER", "PROCESS_REVIEWER", 
                 "SUCCESS", "Order approved by reviewer");
-            
-            // Auto proceed to operations
-            processOperations(order);
             
         } catch (Exception e) {
             OrderStage failedStage = new OrderStage("REVIEWER", new HashMap<>(), "", "FAILED");
@@ -196,12 +189,10 @@ public class OrderProcessingService {
             String hash = hashUtil.calculateHash(previousHash, operationsData);
             OrderStage stage = new OrderStage("OPERATIONS", operationsData, hash, "SUCCESS");
             order.addStage(stage);
+            order.setOverallStatus("PENDING_APPROVAL");
             
             auditService.logEvent(order.getOrderId(), "OPERATIONS", "PROCESS_OPERATIONS", 
                 "SUCCESS", "Order approved by operations team");
-            
-            // Auto proceed to product processor
-            processProductProcessor(order);
             
         } catch (Exception e) {
             OrderStage failedStage = new OrderStage("OPERATIONS", new HashMap<>(), "", "FAILED");
@@ -241,6 +232,63 @@ public class OrderProcessingService {
         }
     }
     
+    public void advanceOrderStage(String orderId) {
+        Order order = getOrderById(orderId);
+        if (order == null) {
+            throw new RuntimeException("Order not found");
+        }
+
+        if (!"PENDING_APPROVAL".equals(order.getOverallStatus())) {
+            throw new RuntimeException("Order is not pending approval");
+        }
+
+        String currentStage = order.getCurrentStage();
+        Client client = dataService.getClientById(order.getClientId());
+        Fund fund = dataService.getFundById(order.getFundId());
+
+        switch (currentStage) {
+            case "SOLICITATION":
+                processSuitability(order, client, fund);
+                break;
+            case "SUITABILITY":
+                processOrderManager(order);
+                break;
+            case "ORDER_MANAGER":
+                processReviewer(order);
+                break;
+            case "REVIEWER":
+                processOperations(order);
+                break;
+            case "OPERATIONS":
+                processProductProcessor(order);
+                break;
+            default:
+                // If it's already at the last stage or completed, do nothing.
+                return;
+        }
+        orderRepository.save(order);
+    }
+
+    public void rejectOrder(String orderId) {
+        Order order = getOrderById(orderId);
+        if (order == null) {
+            throw new RuntimeException("Order not found");
+        }
+
+        if (!"PENDING_APPROVAL".equals(order.getOverallStatus())) {
+            throw new RuntimeException("Order is not pending approval");
+        }
+
+        order.setOverallStatus("FAILED");
+        OrderStage failedStage = new OrderStage(order.getCurrentStage(), new HashMap<>(), "", "FAILED");
+        failedStage.setMessage("Order rejected by user.");
+        order.addStage(failedStage);
+        orderRepository.save(order);
+
+        auditService.logEvent(orderId, order.getCurrentStage(), "REJECT_ORDER", "SUCCESS", 
+            "Order rejected by user");
+    }
+    
     // Helper methods for suitability checks
     private boolean checkRiskSuitability(String clientRisk, String fundRisk) {
         return (clientRisk.equals("CONSERVATIVE") && fundRisk.equals("LOW")) ||
@@ -270,18 +318,18 @@ public class OrderProcessingService {
         return orderRepository.findById(orderId).orElse(null);
     }
     
-    public boolean validateOrderHashChain(String orderId) {
+    public int validateOrderHashChain(String orderId) {
         Order order = getOrderById(orderId);
-        if (order == null) return false;
+        if (order == null) return -1;
         
         List<OrderStage> stages = order.getOrderHistory();
-        if (stages.isEmpty()) return true;
+        if (stages.isEmpty()) return 0;
         
         // Validate first stage against genesis hash
         OrderStage firstStage = stages.get(0);
         String expectedFirstHash = hashUtil.calculateHash(hashUtil.getGenesisHash(), firstStage.getData());
         if (!expectedFirstHash.equals(firstStage.getHash())) {
-            return false;
+            return 1;
         }
         
         // Validate subsequent stages
@@ -291,10 +339,10 @@ public class OrderProcessingService {
             
             String expectedHash = hashUtil.calculateHash(previousStage.getHash(), currentStage.getData());
             if (!expectedHash.equals(currentStage.getHash())) {
-                return false;
+                return i + 1;
             }
         }
         
-        return true;
+        return 0;
     }
 }

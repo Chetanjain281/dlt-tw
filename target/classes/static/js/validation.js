@@ -44,7 +44,7 @@ async function validateOrder() {
         const order = allOrders.find(o => o.orderId === orderId);
         
         displayValidationResult(validation, order);
-        displayHashChain(order);
+        displayHashChain(order, validation.invalidIndex);
         
     } catch (error) {
         console.error('Failed to validate order:', error);
@@ -57,15 +57,16 @@ function displayValidationResult(validation, order) {
     
     if (!container) return;
     
-    const statusClass = validation.isValid ? 'validation-success' : 'validation-error';
-    const statusIcon = validation.isValid ? '✓' : '✗';
+    const isValid = validation.invalidIndex === 0;
+    const statusClass = isValid ? 'validation-success' : 'validation-error';
+    const statusIcon = isValid ? '✓' : '✗';
     
     let html = `
         <div class="validation-result ${statusClass}">
             <h3>${statusIcon} Validation Result</h3>
             <p><strong>Order ID:</strong> ${validation.orderId}</p>
             <p><strong>Status:</strong> ${validation.message}</p>
-            <p><strong>Chain Integrity:</strong> ${validation.isValid ? 'Valid' : 'Broken'}</p>
+            <p><strong>Chain Integrity:</strong> ${isValid ? 'Valid' : 'Broken'}</p>
             <p><strong>Total Stages:</strong> ${order.orderHistory.length}</p>
         </div>
     `;
@@ -73,7 +74,7 @@ function displayValidationResult(validation, order) {
     container.innerHTML = html;
 }
 
-function displayHashChain(order) {
+function displayHashChain(order, invalidIndex) {
     const container = document.getElementById('hashChainContainer');
     
     if (!container) return;
@@ -95,9 +96,11 @@ function displayHashChain(order) {
     
     order.orderHistory.forEach((stage, index) => {
         const isLast = index === order.orderHistory.length - 1;
-        
+        const isValid = invalidIndex === 0 || index < invalidIndex -1;
+        const blockClass = isValid ? 'valid' : 'invalid';
+
         html += `
-            <div class="hash-block ${stage.status.toLowerCase()}">
+            <div class="hash-block ${blockClass}">
                 <div class="block-header">${stage.stage}</div>
                 <div class="block-content">
                     <p><strong>Timestamp:</strong> ${formatTimestamp(stage.timestamp)}</p>

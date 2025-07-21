@@ -21,7 +21,8 @@ async function makeApiCall(url, method = 'GET', data = null) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        return await response.json();
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
     } catch (error) {
         console.error('API call failed:', error);
         throw error;
@@ -91,6 +92,9 @@ function getStatusBadge(status) {
         case 'in_progress':
         case 'in-progress':
             className += 'status-progress';
+            break;
+        case 'pending_approval':
+            className += 'status-pending';
             break;
         case 'failed':
             className += 'status-failed';

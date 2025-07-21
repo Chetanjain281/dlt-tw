@@ -54,11 +54,11 @@ public class OrderController {
     
     @GetMapping("/{orderId}/validate")
     public ResponseEntity<Map<String, Object>> validateOrder(@PathVariable String orderId) {
-        boolean isValid = orderProcessingService.validateOrderHashChain(orderId);
+        int invalidIndex = orderProcessingService.validateOrderHashChain(orderId);
         Map<String, Object> response = new HashMap<>();
         response.put("orderId", orderId);
-        response.put("isValid", isValid);
-        response.put("message", isValid ? "Hash chain is valid" : "Hash chain is broken");
+        response.put("invalidIndex", invalidIndex);
+        response.put("message", invalidIndex == 0 ? "Hash chain is valid" : "Hash chain is broken at stage " + invalidIndex);
         return ResponseEntity.ok(response);
     }
     
@@ -72,5 +72,17 @@ public class OrderController {
     public ResponseEntity<List<Fund>> getAllFunds() {
         List<Fund> funds = dataService.getAllFunds();
         return ResponseEntity.ok(funds);
+    }
+
+    @PostMapping("/{orderId}/approve")
+    public ResponseEntity<Void> advanceOrderStage(@PathVariable String orderId) {
+        orderProcessingService.advanceOrderStage(orderId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{orderId}/reject")
+    public ResponseEntity<Void> rejectOrder(@PathVariable String orderId) {
+        orderProcessingService.rejectOrder(orderId);
+        return ResponseEntity.ok().build();
     }
 }
