@@ -1,47 +1,42 @@
 package com.dlt.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "funds")
 public class Fund {
     
-    @Id
-    private String fundId;
-    private String fundName;
-    private String fundType; // EQUITY, BOND, HYBRID, BALANCED
+    private String id;
+    private String name;
+    private String type; // EQUITY, BOND, HYBRID, BALANCED
     private Double minimumInvestment;
-    private String riskCategory; // LOW, MEDIUM, HIGH
-    private Double expectedReturn;
+    private String riskLevel; // LOW, MEDIUM, HIGH
+    private Double averageReturn;
 
     public Fund() {}
 
-    public Fund(String fundId, String fundName, String fundType, 
-               Double minimumInvestment, String riskCategory, Double expectedReturn) {
-        this.fundId = fundId;
-        this.fundName = fundName;
-        this.fundType = fundType;
+    public Fund(String id, String name, String type, 
+               Double minimumInvestment, String riskLevel, Double averageReturn) {
+        this.id = id;
+        this.name = name;
+        this.type = type;
         this.minimumInvestment = minimumInvestment;
-        this.riskCategory = riskCategory;
-        this.expectedReturn = expectedReturn;
+        this.riskLevel = riskLevel;
+        this.averageReturn = averageReturn;
     }
 
     // Getters and Setters
-    public String getFundId() { return fundId; }
-    public void setFundId(String fundId) { this.fundId = fundId; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String getFundName() { return fundName; }
-    public void setFundName(String fundName) { this.fundName = fundName; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getFundType() { return fundType; }
-    public void setFundType(String fundType) { this.fundType = fundType; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 
     public Double getMinimumInvestment() { return minimumInvestment; }
     public void setMinimumInvestment(Double minimumInvestment) { this.minimumInvestment = minimumInvestment; }
 
-    public String getRiskCategory() { return riskCategory; }
-    public void setRiskCategory(String riskCategory) { this.riskCategory = riskCategory; }
+    public String getRiskLevel() { return riskLevel; }
+    public void setRiskLevel(String riskLevel) { this.riskLevel = riskLevel; }
 
-    public Double getExpectedReturn() { return expectedReturn; }
-    public void setExpectedReturn(Double expectedReturn) { this.expectedReturn = expectedReturn; }
+    public Double getAverageReturn() { return averageReturn; }
+    public void setAverageReturn(Double averageReturn) { this.averageReturn = averageReturn; }
 }

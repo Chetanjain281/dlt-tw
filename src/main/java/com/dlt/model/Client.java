@@ -1,43 +1,38 @@
 package com.dlt.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "clients")
 public class Client {
     
-    @Id
-    private String clientId;
-    private String clientName;
+    private String id;
+    private String name;
     private String riskProfile; // CONSERVATIVE, MODERATE, AGGRESSIVE
-    private Double investmentCapacity;
+    private Double investmentLimit;
     private Integer age;
     private String region;
 
     public Client() {}
 
-    public Client(String clientId, String clientName, String riskProfile, 
-                 Double investmentCapacity, Integer age, String region) {
-        this.clientId = clientId;
-        this.clientName = clientName;
+    public Client(String id, String name, String riskProfile, 
+                 Double investmentLimit, Integer age, String region) {
+        this.id = id;
+        this.name = name;
         this.riskProfile = riskProfile;
-        this.investmentCapacity = investmentCapacity;
+        this.investmentLimit = investmentLimit;
         this.age = age;
         this.region = region;
     }
 
     // Getters and Setters
-    public String getClientId() { return clientId; }
-    public void setClientId(String clientId) { this.clientId = clientId; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String getClientName() { return clientName; }
-    public void setClientName(String clientName) { this.clientName = clientName; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     public String getRiskProfile() { return riskProfile; }
     public void setRiskProfile(String riskProfile) { this.riskProfile = riskProfile; }
 
-    public Double getInvestmentCapacity() { return investmentCapacity; }
-    public void setInvestmentCapacity(Double investmentCapacity) { this.investmentCapacity = investmentCapacity; }
+    public Double getInvestmentLimit() { return investmentLimit; }
+    public void setInvestmentLimit(Double investmentLimit) { this.investmentLimit = investmentLimit; }
 
     public Integer getAge() { return age; }
     public void setAge(Integer age) { this.age = age; }

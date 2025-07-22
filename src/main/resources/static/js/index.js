@@ -24,8 +24,8 @@ async function loadClients() {
             clientSelect.innerHTML = '<option value="">Choose a client...</option>';
             clients.forEach(client => {
                 const option = document.createElement('option');
-                option.value = client.clientId;
-                option.textContent = `${client.clientName} (${client.riskProfile})`;
+                option.value = client.id;
+                option.textContent = `${client.name} (${client.riskProfile})`;
                 clientSelect.appendChild(option);
             });
         }
@@ -44,8 +44,8 @@ async function loadFunds() {
             fundSelect.innerHTML = '<option value="">Choose a fund...</option>';
             funds.forEach(fund => {
                 const option = document.createElement('option');
-                option.value = fund.fundId;
-                option.textContent = `${fund.fundName} (${fund.riskCategory} Risk)`;
+                option.value = fund.id;
+                option.textContent = `${fund.name} (${fund.riskLevel} Risk)`;
                 fundSelect.appendChild(option);
             });
         }
@@ -71,8 +71,8 @@ async function loadRecentOrders() {
             let html = '<div class="recent-orders-list">';
             
             recentOrders.forEach(order => {
-                const client = clients.find(c => c.clientId === order.clientId);
-                const fund = funds.find(f => f.fundId === order.fundId);
+                const client = clients.find(c => c.id === order.clientId);
+                const fund = funds.find(f => f.id === order.fundId);
                 
                 html += `
                     <div class="order-item">
@@ -81,8 +81,8 @@ async function loadRecentOrders() {
                             ${getStatusBadge(order.overallStatus)}
                         </div>
                         <div class="order-details">
-                            <span>${client ? client.clientName : order.clientId}</span> → 
-                            <span>${fund ? fund.fundName : order.fundId}</span>
+                            <span>${client ? client.name : order.clientId}</span> → 
+                            <span>${fund ? fund.name : order.fundId}</span>
                             <span class="amount">${formatCurrency(order.requestedAmount)}</span>
                         </div>
                         <div class="order-stage">Current: ${order.currentStage}</div>
@@ -133,7 +133,7 @@ async function handleOrderSubmission(event) {
     }
     
     // Validate minimum investment
-    const selectedFund = funds.find(f => f.fundId === fundId);
+    const selectedFund = funds.find(f => f.id === fundId);
     if (selectedFund && requestedAmount < selectedFund.minimumInvestment) {
         showMessage(`Minimum investment for this fund is ${formatCurrency(selectedFund.minimumInvestment)}`, true);
         return;
@@ -148,7 +148,7 @@ async function handleOrderSubmission(event) {
         
         const newOrder = await makeApiCall(`${API_BASE}/orders/create`, 'POST', orderData);
         
-        showMessage(`Order ${newOrder.orderId} created successfully!`);
+        showMessage(`Order ${newOrder.orderId} solicitated successfully!`);
         
         // Reset form
         document.getElementById('orderForm').reset();
@@ -158,7 +158,7 @@ async function handleOrderSubmission(event) {
         await updateSystemStatus();
         
     } catch (error) {
-        console.error('Failed to create order:', error);
-        showMessage('Failed to create order. Please try again.', true);
+        console.error('Failed to solicitate order:', error);
+        showMessage('Failed to solicitate order. Please try again.', true);
     }
 }

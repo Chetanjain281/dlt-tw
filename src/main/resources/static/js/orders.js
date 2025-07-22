@@ -55,14 +55,14 @@ function displayOrders() {
     `;
     
     allOrders.forEach(order => {
-        const client = clients.find(c => c.clientId === order.clientId);
-        const fund = funds.find(f => f.fundId === order.fundId);
+        const client = clients.find(c => c.id === order.clientId);
+        const fund = funds.find(f => f.id === order.fundId);
         
         html += `
             <tr>
                 <td>${order.orderId}</td>
-                <td>${client ? client.clientName : order.clientId}</td>
-                <td>${fund ? fund.fundName : order.fundId}</td>
+                <td>${client ? client.name : order.clientId}</td>
+                <td>${fund ? fund.name : order.fundId}</td>
                 <td>${formatCurrency(order.requestedAmount)}</td>
                 <td>${order.currentStage}</td>
                 <td>${getStatusBadge(order.overallStatus)}</td>
@@ -88,7 +88,6 @@ function displayOrders() {
 async function approveOrder(orderId) {
     try {
         await makeApiCall(`${API_BASE}/orders/${orderId}/approve`, 'POST');
-        showMessage('Order approved successfully!');
         loadOrdersData(); // Refresh the orders list
     } catch (error) {
         console.error('Failed to approve order:', error);
@@ -99,7 +98,6 @@ async function approveOrder(orderId) {
 async function rejectOrder(orderId) {
     try {
         await makeApiCall(`${API_BASE}/orders/${orderId}/reject`, 'POST');
-        showMessage('Order rejected successfully!');
         loadOrdersData(); // Refresh the orders list
     } catch (error) {
         console.error('Failed to reject order:', error);
@@ -115,16 +113,16 @@ async function showOrderDetails(orderId) {
             return;
         }
         
-        const client = clients.find(c => c.clientId === order.clientId);
-        const fund = funds.find(f => f.fundId === order.fundId);
+        const client = clients.find(c => c.id === order.clientId);
+        const fund = funds.find(f => f.id === order.fundId);
         
         let html = `
             <div class="order-details">
                 <div class="order-info">
                     <h3>Order Information</h3>
                     <p><strong>Order ID:</strong> ${order.orderId}</p>
-                    <p><strong>Client:</strong> ${client ? client.clientName : order.clientId}</p>
-                    <p><strong>Fund:</strong> ${fund ? fund.fundName : order.fundId}</p>
+                    <p><strong>Client:</strong> ${client ? client.name : order.clientId}</p>
+                    <p><strong>Fund:</strong> ${fund ? fund.name : order.fundId}</p>
                     <p><strong>Amount:</strong> ${formatCurrency(order.requestedAmount)}</p>
                     <p><strong>Status:</strong> ${getStatusBadge(order.overallStatus)}</p>
                     <p><strong>Current Stage:</strong> ${order.currentStage}</p>
@@ -137,6 +135,14 @@ async function showOrderDetails(orderId) {
                     <div class="stages-container">
         `;
         
+        // Calculate cumulative data for each stage
+        const cumulativeData = {};
+        order.orderHistory.forEach((stage, index) => {
+            // Merge all previous stage data with current stage data
+            Object.assign(cumulativeData, stage.data);
+            stage.cumulativeData = { ...cumulativeData };
+        });
+
         order.orderHistory.forEach((stage, index) => {
             html += `
                 <div class="order-stage ${stage.status.toLowerCase()}">
@@ -147,10 +153,18 @@ async function showOrderDetails(orderId) {
                     <p><strong>Timestamp:</strong> ${formatTimestamp(stage.timestamp)}</p>
                     <p><strong>Hash:</strong> <code>${stage.hash.substring(0, 16)}...</code></p>
                     ${stage.message ? `<p><strong>Message:</strong> ${stage.message}</p>` : ''}
-                    <details>
-                        <summary>Stage Data</summary>
-                        <pre>${JSON.stringify(stage.data, null, 2)}</pre>
-                    </details>
+                    
+                    <div class="stage-data-sections">
+                        <details class="stage-data-section">
+                            <summary>New Data Added in This Stage</summary>
+                            <pre>${JSON.stringify(stage.data, null, 2)}</pre>
+                        </details>
+                        
+                        <details class="cumulative-data-section">
+                            <summary>Complete Order State at This Stage</summary>
+                            <pre>${JSON.stringify(stage.cumulativeData, null, 2)}</pre>
+                        </details>
+                    </div>
                 </div>
             `;
         });
