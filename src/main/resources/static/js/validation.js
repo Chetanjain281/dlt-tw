@@ -57,7 +57,7 @@ function displayValidationResult(validation, order) {
     
     if (!container) return;
     
-    const isValid = validation.invalidIndex === 0;
+    const isValid = validation.invalidIndex == 0; // Use == instead of ===
     const statusClass = isValid ? 'validation-success' : 'validation-error';
     const statusIcon = isValid ? '✓' : '✗';
     
@@ -96,7 +96,7 @@ function displayHashChain(order, invalidIndex) {
     
     order.orderHistory.forEach((stage, index) => {
         const isLast = index === order.orderHistory.length - 1;
-        const isValid = invalidIndex === 0 || index < invalidIndex -1;
+        const isValid = invalidIndex === 0 || index < invalidIndex - 1;
         const blockClass = isValid ? 'valid' : 'invalid';
 
         html += `
@@ -140,9 +140,16 @@ async function validateAllOrders() {
         
         const validations = await Promise.all(validationPromises);
         
+        console.log('Validation results:', validations);
+        
         const totalOrders = validations.length;
-        const validOrders = validations.filter(v => v.isValid).length;
+        const validOrders = validations.filter(v => {
+            console.log(`Order ${v.orderId}: invalidIndex = ${v.invalidIndex}, type = ${typeof v.invalidIndex}, isValid = ${v.invalidIndex == 0}`);
+            return v.invalidIndex == 0; // Use == instead of === to handle string/number comparison
+        }).length;
         const invalidOrders = totalOrders - validOrders;
+        
+        console.log(`Total: ${totalOrders}, Valid: ${validOrders}, Invalid: ${invalidOrders}`);
         
         let html = `
             <div class="system-validation">
@@ -175,14 +182,15 @@ async function validateAllOrders() {
         `;
         
         validations.forEach(validation => {
-            const statusClass = validation.isValid ? 'valid' : 'invalid';
-            const statusIcon = validation.isValid ? '✓' : '✗';
+            const isValid = validation.invalidIndex == 0; // Use == instead of === 
+            const statusClass = isValid ? 'valid' : 'invalid';
+            const statusIcon = isValid ? '✓' : '✗';
             
             html += `
                 <tr class="${statusClass}">
                     <td>${validation.orderId}</td>
                     <td>${validation.message}</td>
-                    <td>${statusIcon} ${validation.isValid ? 'Valid' : 'Broken'}</td>
+                    <td>${statusIcon} ${isValid ? 'Valid' : 'Broken'}</td>
                 </tr>
             `;
         });
@@ -200,4 +208,9 @@ async function validateAllOrders() {
         console.error('Failed to validate all orders:', error);
         container.innerHTML = '<p>Failed to validate orders. Please try again.</p>';
     }
+}
+
+function formatTimestamp(timestamp) {
+    const date = new Date(timestamp);
+    return date.toLocaleString();
 }

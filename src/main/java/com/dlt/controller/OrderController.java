@@ -24,16 +24,24 @@ public class OrderController {
     private DataInitializationService dataService;
     
     @PostMapping("/create")
-    public ResponseEntity<Order> createOrder(@RequestBody Map<String, Object> request) {
+    public ResponseEntity<?> createOrder(@RequestBody Map<String, Object> request) {
         try {
+            System.out.println("Received order creation request: " + request);
+            
             String clientId = (String) request.get("clientId");
             String fundId = (String) request.get("fundId");
             Double requestedAmount = Double.valueOf(request.get("requestedAmount").toString());
             
+            System.out.println("Parsed values - clientId: " + clientId + ", fundId: " + fundId + ", amount: " + requestedAmount);
+            
             Order order = orderProcessingService.createOrder(clientId, fundId, requestedAmount);
             return ResponseEntity.ok(order);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            System.err.println("Error creating order: " + e.getMessage());
+            e.printStackTrace();
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
     

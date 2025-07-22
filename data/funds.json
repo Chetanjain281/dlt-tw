@@ -1,0 +1,66 @@
+[
+    {
+        "id": "FUND_001",
+        "name": "Conservative Bond Fund",
+        "type": "BOND",
+        "minimumInvestment": 5000.0,
+        "riskLevel": "LOW",
+        "averageReturn": 4.5
+    },
+    {
+        "id": "FUND_002",
+        "name": "Balanced Growth Fund",
+        "type": "HYBRID",
+        "minimumInvestment": 10000.0,
+        "riskLevel": "MEDIUM",
+        "averageReturn": 7.2
+    },
+    {
+        "id": "FUND_003",
+        "name": "Aggressive Equity Fund",
+        "type": "EQUITY",
+        "minimumInvestment": 15000.0,
+        "riskLevel": "HIGH",
+        "averageReturn": 12.8
+    },
+    {
+        "id": "FUND_004",
+        "name": "Global Diversified Fund",
+        "type": "BALANCED",
+        "minimumInvestment": 8000.0,
+        "riskLevel": "MEDIUM",
+        "averageReturn": 6.8
+    },
+    {
+        "id": "FUND_005",
+        "name": "Technology Growth Fund",
+        "type": "EQUITY",
+        "minimumInvestment": 20000.0,
+        "riskLevel": "HIGH",
+        "averageReturn": 15.2
+    },
+    {
+        "id": "FUND_006",
+        "name": "Government Securities Fund",
+        "type": "BOND",
+        "minimumInvestment": 3000.0,
+        "riskLevel": "LOW",
+        "averageReturn": 3.8
+    },
+    {
+        "id": "FUND_007",
+        "name": "Emerging Markets Fund",
+        "type": "EQUITY",
+        "minimumInvestment": 25000.0,
+        "riskLevel": "HIGH",
+        "averageReturn": 18.5
+    },
+    {
+        "id": "FUND_008",
+        "name": "Corporate Bond Fund",
+        "type": "BOND",
+        "minimumInvestment": 7500.0,
+        "riskLevel": "LOW",
+        "averageReturn": 5.2
+    }
+]

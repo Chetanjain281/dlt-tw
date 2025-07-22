@@ -1,15 +1,11 @@
 package com.dlt.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
 
-@Document(collection = "orders")
 public class Order {
     
-    @Id
     private String orderId;
     private String clientId;
     private String fundId;

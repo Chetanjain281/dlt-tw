@@ -1,0 +1,66 @@
+[
+    {
+        "id": "CLIENT_001",
+        "name": "John Smith",
+        "riskProfile": "CONSERVATIVE",
+        "investmentLimit": 50000.0,
+        "age": 45,
+        "region": "North America"
+    },
+    {
+        "id": "CLIENT_002",
+        "name": "Sarah Johnson",
+        "riskProfile": "MODERATE",
+        "investmentLimit": 100000.0,
+        "age": 35,
+        "region": "Europe"
+    },
+    {
+        "id": "CLIENT_003",
+        "name": "Michael Brown",
+        "riskProfile": "AGGRESSIVE",
+        "investmentLimit": 250000.0,
+        "age": 28,
+        "region": "Asia"
+    },
+    {
+        "id": "CLIENT_004",
+        "name": "Emily Davis",
+        "riskProfile": "CONSERVATIVE",
+        "investmentLimit": 75000.0,
+        "age": 55,
+        "region": "North America"
+    },
+    {
+        "id": "CLIENT_005",
+        "name": "Robert Wilson",
+        "riskProfile": "MODERATE",
+        "investmentLimit": 150000.0,
+        "age": 40,
+        "region": "Europe"
+    },
+    {
+        "id": "CLIENT_006",
+        "name": "Lisa Anderson",
+        "riskProfile": "AGGRESSIVE",
+        "investmentLimit": 300000.0,
+        "age": 32,
+        "region": "Asia"
+    },
+    {
+        "id": "CLIENT_007",
+        "name": "David Taylor",
+        "riskProfile": "CONSERVATIVE",
+        "investmentLimit": 60000.0,
+        "age": 50,
+        "region": "Australia"
+    },
+    {
+        "id": "CLIENT_008",
+        "name": "Jennifer Martinez",
+        "riskProfile": "MODERATE",
+        "investmentLimit": 120000.0,
+        "age": 38,
+        "region": "South America"
+    }
+]
